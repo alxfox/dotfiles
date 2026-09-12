@@ -1,0 +1,4 @@
+README.md
+{{- if not .useOhMyZsh }}
+.p10k.zsh
+{{- end }}

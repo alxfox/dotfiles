@@ -1,0 +1,27 @@
+# Keep PATH entries unique. zsh ties the path array to PATH.
+typeset -U path PATH
+
+[[ -d "$HOME/.local/bin" ]] && path=("$HOME/.local/bin" $path)
+[[ -d "$HOME/.cargo/bin" ]] && path=("$HOME/.cargo/bin" $path)
+
+export PNPM_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/pnpm"
+[[ -d "$PNPM_HOME" ]] && path=("$PNPM_HOME" $path)
+
+{{- if eq .chezmoi.os "darwin" }}
+export BROWSER=open
+{{- else if eq .chezmoi.os "linux" }}
+export BROWSER=xdg-open
+{{- end }}
+
+if (( $+commands[code] )); then
+  export EDITOR=code
+elif (( $+commands[nvim] )); then
+  export EDITOR=nvim
+elif (( $+commands[vim] )); then
+  export EDITOR=vim
+else
+  export EDITOR=vi
+fi
+export VISUAL="$EDITOR"
+
+[[ -r "$HOME/.zprofile.local" ]] && source "$HOME/.zprofile.local"

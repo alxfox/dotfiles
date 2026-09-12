@@ -1,0 +1,16 @@
+{{- $profile := promptChoiceOnce . "profile" "Machine profile" (list "personal" "work") "personal" -}}
+{{- $name := promptStringOnce . "name" "Full name" "Alexander Fuchs" -}}
+{{- $email := promptStringOnce . "email" "Git email address" -}}
+{{- $useOhMyZsh := promptBoolOnce . "useOhMyZsh" "Install Oh My Zsh and Powerlevel10k" true -}}
+
+[data]
+    profile = {{ $profile | quote }}
+    name = {{ $name | quote }}
+    email = {{ $email | quote }}
+    useOhMyZsh = {{ $useOhMyZsh }}
+
+[git]
+    autoAdd = true
+
+[edit]
+    apply = true

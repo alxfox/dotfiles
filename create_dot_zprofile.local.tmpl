@@ -1,0 +1,27 @@
+# This file is machine-local. Chezmoi creates it once and does not update it.
+
+# Secrets that are intentionally not committed.
+[[ -r "$HOME/.secrets" ]] && source "$HOME/.secrets"
+{{- if eq .profile "personal" }}
+
+# ROS 2
+export ROS_LOCALHOST_ONLY=1
+
+# TeX Live 2025
+path=(/usr/local/texlive/2025/bin/x86_64-linux $path)
+export MANPATH="/usr/local/texlive/2025/texmf-dist/doc/man${MANPATH:+:$MANPATH}"
+export INFOPATH="/usr/local/texlive/2025/texmf-dist/doc/info${INFOPATH:+:$INFOPATH}"
+
+# Local development tools
+path=("$HOME/Apps/llama.cpp/build/bin" "$HOME/Apps/emsdk" "$HOME/Apps/emsdk/upstream/emscripten" $path)
+
+# Android SDK
+export ANDROID_HOME="$HOME/Android/Sdk"
+
+# Java
+export JAVA_HOME="/usr/lib/jvm/java-17-openjdk"
+path=("$JAVA_HOME/bin" $path)
+
+# SSH agent
+export SSH_AUTH_SOCK="${XDG_RUNTIME_DIR:-/run/user/$UID}/ssh-agent.socket"
+{{- end }}
