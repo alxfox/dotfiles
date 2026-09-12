@@ -1,0 +1,7 @@
+Host foxpi
+  HostName 192.168.2.9
+  User fox
+
+Host serverfox
+  HostName 192.168.2.42
+  User fox
