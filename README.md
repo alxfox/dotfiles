@@ -14,7 +14,8 @@ If SSH is not configured yet, use the HTTPS repository URL instead.
 
 The initialization prompt stores machine-local values in
 `~/.config/chezmoi/chezmoi.toml`. That file is not committed. Choose the
-appropriate profile and Git email for each machine.
+appropriate profile and Git email for each machine. You can also let chezmoi
+install zsh when it is missing and opt into Oh My Zsh with Powerlevel10k.
 
 ## Daily workflow
 

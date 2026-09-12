@@ -1,0 +1,31 @@
+{{- if .autoInstallZsh -}}
+#!/bin/sh
+set -eu
+
+command -v zsh >/dev/null 2>&1 && exit 0
+
+if [ "$(id -u)" -eq 0 ]; then
+  privilege=""
+elif command -v sudo >/dev/null 2>&1; then
+  privilege="sudo"
+else
+  echo "Cannot install zsh: root access or sudo is required." >&2
+  exit 1
+fi
+
+if command -v pacman >/dev/null 2>&1; then
+  $privilege pacman -S --needed --noconfirm zsh
+elif command -v apt-get >/dev/null 2>&1; then
+  $privilege apt-get update
+  $privilege apt-get install -y zsh
+elif command -v dnf >/dev/null 2>&1; then
+  $privilege dnf install -y zsh
+elif command -v apk >/dev/null 2>&1; then
+  $privilege apk add zsh
+elif command -v brew >/dev/null 2>&1; then
+  brew install zsh
+else
+  echo "Cannot install zsh: unsupported package manager." >&2
+  exit 1
+fi
+{{- end }}
