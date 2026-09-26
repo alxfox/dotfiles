@@ -1,0 +1,15 @@
+{{- if .useOhMyZsh -}}
+#!/bin/sh
+set -eu
+
+zsh_dir="$HOME/.oh-my-zsh"
+p10k_dir="$zsh_dir/custom/themes/powerlevel10k"
+
+if ! command -v git >/dev/null 2>&1; then
+  echo "Cannot install Oh My Zsh: git is required." >&2
+  exit 1
+fi
+
+[ -e "$zsh_dir" ] || git clone --depth=1 https://github.com/ohmyzsh/ohmyzsh.git "$zsh_dir"
+[ -e "$p10k_dir" ] || git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$p10k_dir"
+{{- end }}

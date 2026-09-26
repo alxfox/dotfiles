@@ -17,6 +17,10 @@ The initialization prompt stores machine-local values in
 appropriate profile and Git email for each machine. You can also let chezmoi
 install zsh when it is missing and opt into Oh My Zsh with Powerlevel10k.
 
+Oh My Zsh and Powerlevel10k are cloned once into `~/.oh-my-zsh` when missing
+and are not managed by chezmoi afterwards. Update them with `omz update` and
+`git -C ~/.oh-my-zsh/custom/themes/powerlevel10k pull`.
+
 ## Daily workflow
 
 ```sh
