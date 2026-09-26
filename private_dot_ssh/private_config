@@ -3,5 +3,13 @@ Host foxpi
   User fox
 
 Host serverfox
-  HostName 192.168.2.42
   User fox
+  ConnectTimeout 5
+
+# Prefer the LAN address when connected to the home subnet.
+Match originalhost serverfox exec "ip -4 route get 192.168.2.42 2>/dev/null | grep -q 'src 192\\.168\\.2\\.'"
+  HostName 192.168.2.42
+
+# HostName uses the first value found, so this is only the fallback.
+Match originalhost serverfox
+  HostName serverfox.foxhound-ling.ts.net
