@@ -29,6 +29,8 @@ else
   PROMPT='%F{cyan}%n@%m%f:%F{blue}%~%f %# '
 fi
 
+source ~/.zsh_aliases
+
 {{- if .useOhMyZsh }}
 [[ -r "$HOME/.p10k.zsh" ]] && source "$HOME/.p10k.zsh"
 {{- end }}
