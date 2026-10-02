@@ -6,6 +6,10 @@ Host serverfox
   User fox
   ConnectTimeout 5
 
+Host alienware3
+  HostName 10.162.40.97
+  User ubuntu
+
 # Prefer the LAN address when connected to the home subnet.
 Match originalhost serverfox exec "ip -4 route get 192.168.2.42 2>/dev/null | grep -q 'src 192\\.168\\.2\\.'"
   HostName 192.168.2.42
