@@ -1,4 +1,1 @@
-# This file is machine-local. Chezmoi creates it once and does not update it.
-
-# Arch Linux NVM package
-[[ -r /usr/share/nvm/init-nvm.sh ]] && source /usr/share/nvm/init-nvm.sh
+# Machine-local interactive shell initialization, aliases, and tool configuration.

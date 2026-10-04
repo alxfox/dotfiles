@@ -1,9 +1,17 @@
-# lsd
-alias l='lsd'
-alias ll='lsd -l'
-alias la='lsd -la'
-alias lt='lsd --tree'
-alias l1='lsd -1'
+# Directory listing
+if (( $+commands[lsd] )); then
+  alias l='lsd'
+  alias ll='lsd -l'
+  alias la='lsd -la'
+  alias lt='lsd --tree'
+  alias l1='lsd -1'
+else
+  alias l='ls'
+  alias ll='ls -lh'
+  alias la='ls -lah'
+  alias lt='ls -R'
+  alias l1='ls -1'
+fi
 
 # Navigation
 alias ..='cd ..'
@@ -24,43 +32,60 @@ alias rm='rm -i'
 
 # Disk / system
 alias df='df -h'
-alias du='du -sh | sort -h'
-alias free='free -h'
+alias du='du -sh'
+(( $+commands[free] )) && alias free='free -h'
 
 # Git
-alias g='git'
-alias gs='git status'
-alias ga='git add'
-alias gaa='git add --all'
-alias gc='git commit'
-alias gcm='git commit -m'
-alias gp='git push'
-alias gl='git pull'
-alias gd='git diff'
-alias gco='git checkout'
-alias gb='git branch'
-alias glog='git log --oneline --graph --decorate --all'
+if (( $+commands[git] )); then
+  alias g='git'
+  alias gs='git status'
+  alias ga='git add'
+  alias gaa='git add --all'
+  alias gc='git commit'
+  alias gcm='git commit -m'
+  alias gp='git push'
+  alias gl='git pull'
+  alias gd='git diff'
+  alias gco='git checkout'
+  alias gb='git branch'
+  alias glog='git log --oneline --graph --decorate --all'
+fi
 
 # Docker
-alias d='docker'
-alias dps='docker ps'
-alias dpsa='docker ps -a'
-alias di='docker images'
-alias dex='docker exec -it'
-alias dc='docker compose'
-alias dcu='docker compose up'
-alias dcud='docker compose up -d'
-alias dcd='docker compose down'
+if (( $+commands[docker] )); then
+  alias d='docker'
+  alias dps='docker ps'
+  alias dpsa='docker ps -a'
+  alias di='docker images'
+  alias dex='docker exec -it'
+  alias dc='docker compose'
+  alias dcu='docker compose up'
+  alias dcud='docker compose up -d'
+  alias dcd='docker compose down'
+  alias debian='docker run --rm -it debian:latest bash'
+fi
 
 # Networking
-alias ports='ss -tulpn'
-alias ipinfo='ip addr'
-alias myip='curl -s https://ifconfig.me'
+if (( $+commands[ss] )); then
+  alias ports='ss -tulpn'
+elif (( $+commands[lsof] )); then
+  alias ports='lsof -i -P -n'
+fi
+
+if (( $+commands[ip] )); then
+  alias ipinfo='ip addr'
+elif (( $+commands[ifconfig] )); then
+  alias ipinfo='ifconfig'
+fi
+
+(( $+commands[curl] )) && alias myip='curl -fsS https://ifconfig.me'
 
 # Processes
-alias psg='ps aux | grep'
-alias mem='ps aux --sort=-%mem | head'
-alias cpu='ps aux --sort=-%cpu | head'
+if (( $+commands[ps] && $+commands[grep] )); then
+  alias psg='ps aux | grep'
+fi
 
-# Disposable Debian container
-alias debian='docker run --rm -it debian:latest bash'
+if [[ "$OSTYPE" == linux* ]]; then
+  alias mem='ps aux --sort=-%mem | head'
+  alias cpu='ps aux --sort=-%cpu | head'
+fi

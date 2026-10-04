@@ -10,12 +10,10 @@ export PNPM_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/pnpm"
 {{- if eq .chezmoi.os "darwin" }}
 export BROWSER=open
 {{- else if eq .chezmoi.os "linux" }}
-export BROWSER=xdg-open
+(( $+commands[xdg-open] )) && export BROWSER=xdg-open
 {{- end }}
 
-if (( $+commands[code] )); then
-  export EDITOR=code
-elif (( $+commands[nvim] )); then
+if (( $+commands[nvim] )); then
   export EDITOR=nvim
 elif (( $+commands[vim] )); then
   export EDITOR=vim
@@ -23,5 +21,11 @@ else
   export EDITOR=vi
 fi
 export VISUAL="$EDITOR"
+
+# Keep ROS 2 discovery on this host.
+export ROS_LOCALHOST_ONLY=1
+
+# Secrets that are intentionally not committed.
+[[ -r "$HOME/.secrets" ]] && source "$HOME/.secrets"
 
 [[ -r "$HOME/.zprofile.local" ]] && source "$HOME/.zprofile.local"
