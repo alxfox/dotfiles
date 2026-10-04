@@ -1,10 +1,10 @@
 # Dotfiles
 
-Portable personal and work configuration managed by [chezmoi](https://www.chezmoi.io/).
+Portable configuration managed by [chezmoi](https://www.chezmoi.io/).
 
 ## New machine
 
-Install chezmoi, clone this repository, answer the profile prompts, and apply:
+Install chezmoi, clone this repository, answer the prompts, and apply:
 
 ```sh
 sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply git@github.com:alxfox/dotfiles.git
@@ -13,13 +13,15 @@ sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply git@github.com:alxfox/dotfi
 If SSH is not configured yet, use the HTTPS repository URL instead.
 
 The initialization prompt stores machine-local values in
-`~/.config/chezmoi/chezmoi.toml`. That file is not committed. Choose the
-appropriate profile and Git email for each machine. You can also let chezmoi
-install zsh when it is missing and opt into Oh My Zsh with Powerlevel10k.
+`~/.config/chezmoi/chezmoi.toml`. That file is not committed. Choose the Git
+identity for each machine. You can also let chezmoi install zsh when it is
+missing, opt into Oh My Zsh with Powerlevel10k, and install Caveman for Claude
+Code, Codex, both, or neither. Caveman installation requires Node.js and `npx`.
 
-Oh My Zsh and Powerlevel10k are cloned once into `~/.oh-my-zsh` when missing
-and are not managed by chezmoi afterwards. Update them with `omz update` and
-`git -C ~/.oh-my-zsh/custom/themes/powerlevel10k pull`.
+Oh My Zsh and Powerlevel10k are managed as Git repository externals. Oh My Zsh
+checks for updates weekly, while Powerlevel10k is pinned to `v1.20.0`. Generate
+the machine-local prompt config with `p10k configure`. Force an external refresh
+with `chezmoi -R apply`. Caveman is pinned to `v3.1.0`.
 
 ## Daily workflow
 
@@ -35,9 +37,23 @@ Run `chezmoi apply --dry-run --verbose` before applying a large change.
 
 ## Machine-local configuration
 
-Use `~/.zprofile.local` for login-shell environment variables and PATH entries,
-and `~/.zshrc.local` for interactive aliases and tool initialization. Chezmoi
-creates starter versions once, then deliberately leaves them alone.
+Use `~/.zprofile.local` for machine-specific login-shell environment variables
+and PATH entries, and `~/.zshrc.local` for interactive aliases and tool
+initialization. Chezmoi creates starter versions once, then deliberately leaves
+them alone. Managed `.zprofile` sources the private `~/.secrets` file directly.
+
+Use `~/.ssh/config.local` for machine-local SSH hosts and overrides. Chezmoi
+creates it with owner-only permissions and does not update it afterwards.
+
+The tmux configuration keeps the default prefix and keybindings, adding mouse
+support, a larger history, and `Prefix-R` to reload the file. TPM manages
+tmux-resurrect and tmux-continuum; sessions are saved every 15 minutes and
+restored when tmux next starts. Use `Prefix-Ctrl-s` and `Prefix-Ctrl-r` for a
+manual save and restore, or `Prefix-U` to update plugins. Saved session data is
+machine-local and is not committed.
+
+Claude Code and Codex share the same global working conventions. Codex reads a
+symlink at `~/.codex/AGENTS.md` pointing to `~/.claude/CLAUDE.md`.
 
 Keep secrets out of this repository. `~/.secrets` is sourced when present and
 chezmoi enforces owner-only permissions without managing its contents. A
