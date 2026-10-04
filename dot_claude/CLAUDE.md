@@ -1,14 +1,12 @@
 # Personal working conventions
 
 Author: Alexander Fuchs (alx.fuchs@tum.de). These are user-level conventions that apply to
-every project. A project-level `CLAUDE.md` may add detail or override a rule, but never
-relaxes the writing rules in "Documentation" or the commit rules in "Git".
+every project. A project-level instruction file (`CLAUDE.md` or `AGENTS.md`) may add
+detail or override a rule, but never relaxes the writing rules in "Documentation" or the
+commit rules in "Git".
 
 ## Communication
 
-- Be concise. Compress wording, never operational detail, constraints, or warnings.
-- Answer the question asked. No preamble, no summary of what you are about to do, no
-  restating my request back to me.
 - Ground every answer in the actual checkout. Read the file, log, or config being
   discussed before answering from general knowledge.
 - Give the real cause, not only a workaround. If the root cause stays unproven, say so
