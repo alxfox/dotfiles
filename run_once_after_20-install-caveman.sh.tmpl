@@ -1,0 +1,18 @@
+{{- if gt (len .cavemanAgents) 0 -}}
+#!/bin/sh
+set -eu
+
+if ! command -v npx >/dev/null 2>&1; then
+  echo "Cannot install Caveman: npx is required." >&2
+  exit 1
+fi
+
+{{- if has "claude" .cavemanAgents }}
+npx --allow-git=all -y github:JuliusBrussee/caveman#v3.1.0 -- \
+  --only claude --minimal --non-interactive
+{{- end }}
+{{- if has "codex" .cavemanAgents }}
+npx -y skills add github:JuliusBrussee/caveman#v3.1.0 \
+  --skill '*' --agent codex --yes --global
+{{- end }}
+{{- end }}
