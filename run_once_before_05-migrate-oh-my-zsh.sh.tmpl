@@ -1,0 +1,15 @@
+{{- if .useOhMyZsh -}}
+#!/bin/sh
+set -eu
+
+omz_dir="$HOME/.oh-my-zsh"
+backup_dir="$HOME/.oh-my-zsh.chezmoi-archive-backup"
+
+if [ -e "$omz_dir" ] && [ ! -d "$omz_dir/.git" ]; then
+  if [ -e "$backup_dir" ]; then
+    echo "Cannot migrate Oh My Zsh: $backup_dir already exists." >&2
+    exit 1
+  fi
+  mv "$omz_dir" "$backup_dir"
+fi
+{{- end }}
