@@ -1,0 +1,4 @@
+# Machine-local login environment and PATH entries.
+source "$HOME/.zprofile.remote"
+
+[[ -r "$HOME/.secrets" ]] && source "$HOME/.secrets"

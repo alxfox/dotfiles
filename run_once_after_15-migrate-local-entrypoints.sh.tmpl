@@ -1,0 +1,99 @@
+#!/bin/sh
+set -eu
+
+destination={{ .chezmoi.destDir | quote }}
+source_dir={{ .chezmoi.sourceDir | quote }}
+chezmoi={{ .chezmoi.executable | quote }}
+config={{ .chezmoi.configFile | quote }}
+staging=$(mktemp -d "${TMPDIR:-/tmp}/dotfiles-migration.XXXXXX")
+trap 'rm -rf "$staging"' EXIT HUP INT TERM
+
+# Historical templates identify the two layouts shipped before this migration.
+for name in zshrc zprofile gitconfig; do
+    current="$destination/.$name"
+    [ -f "$current" ] || continue
+    case "$name" in
+        zshrc|zprofile)
+            if grep -Fxq "source \"\$HOME/.$name.remote\"" "$current"; then
+                continue
+            fi
+            ;;
+        gitconfig)
+            if git config --file "$current" --get-all include.path | grep -Fxq '~/.gitconfig.remote'; then
+                continue
+            fi
+            ;;
+    esac
+
+    matched=false
+    for revision in 1ef8c4eea86109c2bf24295f7af03e9cafa468ad 00ee7cd6998f157b7ea002dac1c4e1492167d771; do
+        git -C "$source_dir" show "$revision:dot_$name.tmpl" > "$staging/template"
+        "$chezmoi" --config "$config" --source "$source_dir" execute-template < "$staging/template" > "$staging/base"
+        size=$(wc -c < "$staging/base")
+        head -c "$size" "$current" > "$staging/prefix"
+        if cmp -s "$staging/base" "$staging/prefix"; then
+            matched=true
+            break
+        fi
+    done
+    if [ "$matched" = false ]; then
+        echo "Cannot migrate $current: shared configuration was edited or predates the supported layouts. No entry points were changed. Move its local settings after the .$name.remote include manually, then rerun chezmoi apply." >&2
+        exit 1
+    fi
+
+    case "$name" in
+        zshrc)
+            printf 'source "$HOME/.zshrc.remote"\n\n' > "$staging/$name"
+            sed -n '/^# nvm.*alias parser/,/^fi$/p' "$staging/base" >> "$staging/$name"
+            ;;
+        zprofile)
+            printf 'source "$HOME/.zprofile.remote"\n\n' > "$staging/$name"
+            sed -n '/^\[\[ -d "\$HOME\/.local\/bin"/,/^\[\[ -d "\$PNPM_HOME"/p' "$staging/base" >> "$staging/$name"
+            sed -n '\|^\[\[ -r /etc/profile.d/apps-bin-path.sh|p' "$staging/base" >> "$staging/$name"
+            sed -n '/^# Keep ROS 2 discovery/,/^\[\[ -r "\$HOME\/.secrets"/p' "$staging/base" >> "$staging/$name"
+            ;;
+        gitconfig)
+            printf '[include]\n    path = ~/.gitconfig.remote\n\n' > "$staging/$name"
+            sed '/^\[init\]/,$d' "$staging/base" >> "$staging/$name"
+            ;;
+    esac
+
+    # The former local include ran before any installer additions at EOF.
+    if [ -f "$current.local" ]; then
+        printf '\n' >> "$staging/$name"
+        cat "$current.local" >> "$staging/$name"
+        printf '\n' >> "$staging/$name"
+    fi
+    tail -c "+$((size + 1))" "$current" >> "$staging/$name"
+    case "$name" in
+        zshrc|zprofile) zsh -n "$staging/$name" ;;
+        gitconfig) git config --file "$staging/$name" --list >/dev/null ;;
+    esac
+done
+
+# Validate all candidates before replacing any entry point. Keep byte-exact backups.
+backup="$destination/.local/state/chezmoi/local-entrypoints-backup"
+for name in zshrc zprofile gitconfig; do
+    [ -f "$staging/$name" ] || continue
+    mkdir -p "$backup"
+    chmod 700 "$backup"
+    current="$destination/.$name"
+    if [ -e "$backup/.$name" ]; then
+        echo "Cannot migrate $current: backup already exists at $backup/.$name. Inspect it before retrying." >&2
+        exit 1
+    fi
+done
+for name in zshrc zprofile gitconfig; do
+    [ -f "$staging/$name" ] || continue
+    current="$destination/.$name"
+    cp -p "$current" "$backup/.$name"
+    if [ -f "$current.local" ]; then
+        cp -p "$current.local" "$backup/.$name.local"
+    fi
+    cp -p "$current" "$staging/$name.new"
+    cat "$staging/$name" > "$staging/$name.new"
+    mv "$staging/$name.new" "$current"
+    if [ -f "$current.local" ]; then
+        rm "$current.local"
+    fi
+done

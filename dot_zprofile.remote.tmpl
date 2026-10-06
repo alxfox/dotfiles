@@ -1,0 +1,17 @@
+# Keep PATH entries unique. zsh ties the path array to PATH.
+typeset -U path PATH
+
+{{- if eq .chezmoi.os "darwin" }}
+export BROWSER=open
+{{- else if eq .chezmoi.os "linux" }}
+(( $+commands[xdg-open] )) && export BROWSER=xdg-open
+{{- end }}
+
+if (( $+commands[nvim] )); then
+  export EDITOR=nvim
+elif (( $+commands[vim] )); then
+  export EDITOR=vim
+else
+  export EDITOR=vi
+fi
+export VISUAL="$EDITOR"

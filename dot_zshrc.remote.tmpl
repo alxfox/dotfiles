@@ -38,16 +38,6 @@ PROMPT='%F{cyan}%n@%m%f:%F{blue}%~%f %# '
 
 source ~/.zsh_aliases
 
-# nvm's alias parser requires standard glob patterns.
-unsetopt extendedglob
-if [[ -r "${NVM_DIR:-$HOME/.nvm}/nvm.sh" ]]; then
-  export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
-  source "$NVM_DIR/nvm.sh"
-elif [[ -r /usr/share/nvm/init-nvm.sh ]]; then
-  source /usr/share/nvm/init-nvm.sh
-fi
-
 {{ if .useOhMyZsh -}}
 [[ -r "$HOME/.p10k.zsh" ]] && source "$HOME/.p10k.zsh"
 {{- end }}
-[[ -r "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
