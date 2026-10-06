@@ -37,6 +37,13 @@ Run `chezmoi apply --dry-run --verbose` before applying a large change.
 
 ## Machine-local configuration
 
+The managed zsh configuration loads nvm from `$NVM_DIR` (default `~/.nvm`),
+or `/usr/share/nvm/init-nvm.sh` when the user installation is absent. It disables
+`extendedglob` because it conflicts with nvm alias parsing. On Linux, login
+shells load Snap's `/etc/profile.d/apps-bin-path.sh` when present to initialize
+command and desktop application paths. These tools are not installed by this
+configuration.
+
 Use `~/.zprofile.local` for machine-specific login-shell environment variables
 and PATH entries, and `~/.zshrc.local` for interactive aliases and tool
 initialization. Chezmoi creates starter versions once, then deliberately leaves

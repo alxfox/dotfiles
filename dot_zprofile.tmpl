@@ -10,6 +10,7 @@ export PNPM_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/pnpm"
 {{- if eq .chezmoi.os "darwin" }}
 export BROWSER=open
 {{- else if eq .chezmoi.os "linux" }}
+[[ -r /etc/profile.d/apps-bin-path.sh ]] && source /etc/profile.d/apps-bin-path.sh
 (( $+commands[xdg-open] )) && export BROWSER=xdg-open
 {{- end }}
 
