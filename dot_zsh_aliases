@@ -30,11 +30,6 @@ alias cp='cp -i'
 alias mv='mv -i'
 alias rm='rm -i'
 
-# Disk / system
-alias df='df -h'
-alias du='du -sh'
-(( $+commands[free] )) && alias free='free -h'
-
 # Git
 if (( $+commands[git] )); then
   alias g='git'
