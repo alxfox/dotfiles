@@ -28,6 +28,11 @@ commit rules in "Git".
   marked as placeholders.
 - Never invent behavior. If something is unclear, undecided, or unverified, state that
   visibly in the document (a NOTE admonition marking it as an open decision).
+- Do not hard-wrap Markdown prose at a column limit (80, 100, 140 or otherwise). Write
+  each paragraph and each list item on one line and let the renderer wrap it. A line
+  break at the end of a sentence is allowed where it helps readability and diffs. Never
+  re-wrap existing paragraphs unless asked. Code blocks, tables and intentional hard
+  breaks (`\` or trailing double space) stay as they are.
 - Strict page ownership. When content overlaps two pages, move it to the page that owns
   it and cross-link. Do not duplicate procedures.
 - Migrating or importing content means reorganizing and tightening it, not copying it
