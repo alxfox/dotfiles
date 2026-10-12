@@ -1,15 +1,9 @@
 {{- $name := promptStringOnce . "name" "Full name" "Alexander Fuchs" -}}
 {{- $email := promptStringOnce . "email" "Git email address" "alx.fuchs@tum.de" -}}
-{{- $autoInstallZsh := promptBoolOnce . "autoInstallZsh" "Install zsh automatically when missing" false -}}
-{{- $useOhMyZsh := promptBoolOnce . "useOhMyZsh" "Use Oh My Zsh and Powerlevel10k" true -}}
-{{- $cavemanAgents := promptMultichoiceOnce . "cavemanAgents" "Install Caveman for" (list "claude" "codex") (list) -}}
 
 [data]
     name = {{ $name | quote }}
     email = {{ $email | quote }}
-    autoInstallZsh = {{ $autoInstallZsh }}
-    useOhMyZsh = {{ $useOhMyZsh }}
-    cavemanAgents = {{ $cavemanAgents | toToml }}
 
 [edit]
     apply = true

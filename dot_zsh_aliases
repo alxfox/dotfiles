@@ -28,7 +28,6 @@ alias zshrc='$EDITOR ~/.zshrc'
 # Safer file operations
 alias cp='cp -i'
 alias mv='mv -i'
-alias rm='rm -i'
 
 # Git
 if (( $+commands[git] )); then
