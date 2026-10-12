@@ -36,19 +36,31 @@ Run `chezmoi apply --dry-run --verbose` before applying a large change.
 
 | Local entry point | Managed shared configuration | Local contents |
 | --- | --- | --- |
-| `~/.zshrc` | `~/.zshrc.remote`, `~/.zsh_aliases` | Tool initialization, installer additions, interactive overrides |
-| `~/.zprofile` | `~/.zprofile.remote` | PATH entries, tool environment, secrets |
+| `~/.profile`, `~/.zprofile` | `~/.config/shell/profile` | PATH entries, tool environment |
+| `~/.bashrc`, `~/.zshrc` | `~/.config/shell/bashrc`, `~/.config/shell/zshrc`, `~/.config/shell/aliases` | Tool initialization, installer additions, interactive overrides |
 | `~/.gitconfig` | `~/.config/git/config`, `~/.config/git/ignore` | Identity, signing, credential helpers, local overrides |
 | `~/.ssh/config.local` | `~/.ssh/config` | Machine-local hosts and overrides |
 
-Chezmoi creates the local entry points only when absent and never updates them afterwards. Edit shared files with `chezmoi edit`. Edit local entry points directly and do not import them with `chezmoi add` or `chezmoi re-add`.
+```mermaid
+flowchart LR
+    profile["~/.profile"] --> shprofile["~/.config/shell/profile"]
+    zprofile["~/.zprofile"] --> shprofile
+    bashrc["~/.bashrc"] --> shbashrc["~/.config/shell/bashrc"]
+    zshrc["~/.zshrc"] --> shzshrc["~/.config/shell/zshrc"]
+    shbashrc --> aliases["~/.config/shell/aliases"]
+    shzshrc --> aliases
+    shprofile --> secrets["~/.secrets"]
+```
 
-- **zsh**: `~/.zshrc` and `~/.zprofile` source their `.remote` file on the first line. Oh My Zsh and Powerlevel10k are used when installed, plain zsh otherwise. Generate the local prompt config with `p10k configure`.
-- **Git**: Git reads `~/.config/git/config` before `~/.gitconfig`, so local settings win without an include. The Git identity is seeded from the initialization answers; later changes, including `git config --global`, go to `~/.gitconfig`.
-- **SSH**: `~/.ssh/config` includes `~/.ssh/config.local` first. SSH uses the first value found for each option, so local settings win. Keys are not managed.
+Edit shared files with `chezmoi edit`. Edit local entry points directly and do not import them with `chezmoi add` or `chezmoi re-add`.
 
-> [!WARNING]
-> Chezmoi does not create an entry point that already exists. If an installer creates `~/.zshrc` or `~/.zprofile` before the first apply, add the `source "$HOME/.zshrc.remote"` or `source "$HOME/.zprofile.remote"` line at the top manually.
+- **Shell**: `profile` and `aliases` are POSIX sh and shared by bash and zsh. `bashrc` and `zshrc` hold the shell-specific history, prompt, and option settings. chezmoi only ensures that each shell entry point contains its `source` line, appending it when missing, and leaves all other lines untouched. Existing distribution files such as Ubuntu's `~/.bashrc` and `~/.profile` are kept. Settings that must override the shared configuration go after the `source` line.
+- **zsh**: Oh My Zsh and Powerlevel10k are used when installed, plain zsh otherwise. Generate the local prompt config with `p10k configure`.
+- **Git**: Git reads `~/.config/git/config` before `~/.gitconfig`, so local settings win without an include. chezmoi creates `~/.gitconfig` only when absent, seeded from the initialization answers; later changes, including `git config --global`, go to `~/.gitconfig`.
+- **SSH**: `~/.ssh/config` includes `~/.ssh/config.local` first. SSH uses the first value found for each option, so local settings win. chezmoi creates `config.local` only when absent. Keys are not managed.
+
+> [!NOTE]
+> bash reads `~/.profile` only when neither `~/.bash_profile` nor `~/.bash_login` exists. On machines with one of those files, source `~/.profile` from it.
 
 The tmux configuration keeps the default prefix and keybindings, adding mouse support, a larger history, and `Prefix-R` to reload the file.
 
@@ -56,10 +68,12 @@ Claude Code and Codex share the same global working conventions. Codex reads a s
 
 ## Secrets
 
-Keep secrets out of this repository. `~/.secrets` is sourced from `~/.zprofile` when present, and chezmoi enforces owner-only permissions without managing its contents. A password manager integration is preferable for values that need to be shared.
+Keep secrets out of this repository. `~/.secrets` is sourced from `~/.config/shell/profile` when present, and chezmoi enforces owner-only permissions without managing its contents. A password manager integration is preferable for values that need to be shared.
 
-## Upgrading from the `.gitconfig.remote` layout
+## Upgrading from the `.remote` layout
 
-Machines set up before the move to `~/.config/git/config` have `[include] path = ~/.gitconfig.remote` in `~/.gitconfig`. `chezmoi apply` deletes `~/.gitconfig.remote` (listed in `.chezmoiremove`); Git ignores the missing include. Remove the `[include]` block from `~/.gitconfig` by hand.
+Earlier versions used `~/.zshrc.remote`, `~/.zprofile.remote`, `~/.zsh_aliases`, and `~/.gitconfig.remote`. `chezmoi apply` deletes these files (listed in `.chezmoiremove`) and rewrites the `.remote` source lines in `~/.zshrc` and `~/.zprofile`. Remaining manual steps:
 
-Earlier versions also cloned `~/.oh-my-zsh` and `~/.tmux/plugins/tpm`. These directories are no longer managed and can be kept or deleted.
+- Remove the `[include] path = ~/.gitconfig.remote` block from `~/.gitconfig`. Git ignores the missing file until then.
+- Remove the `~/.secrets` line from `~/.zprofile`. The shared profile sources it now.
+- Delete `~/.oh-my-zsh` and `~/.tmux/plugins/tpm` if they are no longer used. They are no longer managed.

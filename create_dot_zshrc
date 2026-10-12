@@ -1,2 +1,0 @@
-# Machine-local interactive configuration. Installer additions belong here.
-source "$HOME/.zshrc.remote"

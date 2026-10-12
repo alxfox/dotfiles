@@ -1,0 +1,21 @@
+# Shared login environment. POSIX sh: sourced by ~/.profile and ~/.zprofile.
+{{- if eq .chezmoi.os "darwin" }}
+export BROWSER=open
+{{- else if eq .chezmoi.os "linux" }}
+if command -v xdg-open >/dev/null 2>&1; then
+  export BROWSER=xdg-open
+fi
+{{- end }}
+
+if command -v nvim >/dev/null 2>&1; then
+  export EDITOR=nvim
+elif command -v vim >/dev/null 2>&1; then
+  export EDITOR=vim
+else
+  export EDITOR=vi
+fi
+export VISUAL="$EDITOR"
+
+if [ -r "$HOME/.secrets" ]; then
+  . "$HOME/.secrets"
+fi

@@ -1,7 +1,12 @@
+# Shared interactive zsh configuration. Sourced by ~/.zshrc.
+
 # Enable Powerlevel10k's instant prompt when available.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
+
+# Keep PATH entries unique. zsh ties the path array to PATH.
+typeset -U path PATH
 
 HISTFILE="${ZDOTDIR:-$HOME}/.zsh_history"
 HISTSIZE=10000
@@ -28,6 +33,8 @@ else
   PROMPT='%F{cyan}%n@%m%f:%F{blue}%~%f %# '
 fi
 
-source ~/.zsh_aliases
+source "$HOME/.config/shell/aliases"
+alias reload='source ~/.zshrc'
+alias zshrc='$EDITOR ~/.zshrc'
 
 [[ -r "$HOME/.p10k.zsh" ]] && source "$HOME/.p10k.zsh"

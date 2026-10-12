@@ -1,5 +1,7 @@
+# Shared aliases for bash and zsh. Sourced by ~/.config/shell/{bash,zsh}rc.
+
 # Directory listing
-if (( $+commands[lsd] )); then
+if command -v lsd >/dev/null 2>&1; then
   alias l='lsd'
   alias ll='lsd -l'
   alias la='lsd -la'
@@ -22,15 +24,13 @@ alias ~='cd ~'
 # Common commands
 alias c='clear'
 alias h='history'
-alias reload='source ~/.zshrc'
-alias zshrc='$EDITOR ~/.zshrc'
 
 # Safer file operations
 alias cp='cp -i'
 alias mv='mv -i'
 
 # Git
-if (( $+commands[git] )); then
+if command -v git >/dev/null 2>&1; then
   alias g='git'
   alias gs='git status'
   alias ga='git add'
@@ -46,7 +46,7 @@ if (( $+commands[git] )); then
 fi
 
 # Docker
-if (( $+commands[docker] )); then
+if command -v docker >/dev/null 2>&1; then
   alias d='docker'
   alias dps='docker ps'
   alias dpsa='docker ps -a'
@@ -60,26 +60,28 @@ if (( $+commands[docker] )); then
 fi
 
 # Networking
-if (( $+commands[ss] )); then
+if command -v ss >/dev/null 2>&1; then
   alias ports='ss -tulpn'
-elif (( $+commands[lsof] )); then
+elif command -v lsof >/dev/null 2>&1; then
   alias ports='lsof -i -P -n'
 fi
 
-if (( $+commands[ip] )); then
+if command -v ip >/dev/null 2>&1; then
   alias ipinfo='ip addr'
-elif (( $+commands[ifconfig] )); then
+elif command -v ifconfig >/dev/null 2>&1; then
   alias ipinfo='ifconfig'
 fi
 
-(( $+commands[curl] )) && alias myip='curl -fsS https://ifconfig.me'
+if command -v curl >/dev/null 2>&1; then
+  alias myip='curl -fsS https://ifconfig.me'
+fi
 
 # Processes
-if (( $+commands[ps] && $+commands[grep] )); then
+if command -v ps >/dev/null 2>&1 && command -v grep >/dev/null 2>&1; then
   alias psg='ps aux | grep'
 fi
 
-if [[ "$OSTYPE" == linux* ]]; then
+if [ "$(uname -s)" = Linux ]; then
   alias mem='ps aux --sort=-%mem | head'
   alias cpu='ps aux --sort=-%cpu | head'
 fi

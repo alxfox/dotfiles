@@ -1,0 +1,16 @@
+# Shared interactive bash configuration. Sourced by ~/.bashrc.
+case $- in
+  *i*) ;;
+  *) return ;;
+esac
+
+HISTSIZE=10000
+HISTFILESIZE=10000
+HISTCONTROL=ignoredups
+shopt -s histappend checkwinsize
+
+PS1='\[\e[36m\]\u@\h\[\e[0m\]:\[\e[34m\]\w\[\e[0m\]\$ '
+
+source "$HOME/.config/shell/aliases"
+alias reload='source ~/.bashrc'
+alias bashrc='$EDITOR ~/.bashrc'

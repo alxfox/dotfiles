@@ -1,0 +1,9 @@
+{{- /* chezmoi:modify-template */ -}}
+{{- /* Appends $line when missing. Keeps all other contents. */ -}}
+{{- $line := `source "$HOME/.config/shell/bashrc"` -}}
+{{- $content := .chezmoi.stdin -}}
+{{- if not (contains $line $content) -}}
+{{-   if and $content (not (hasSuffix "\n" $content)) -}}{{- $content = print $content "\n" -}}{{- end -}}
+{{-   $content = print $content $line "\n" -}}
+{{- end -}}
+{{- $content -}}

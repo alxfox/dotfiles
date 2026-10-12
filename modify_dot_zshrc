@@ -1,0 +1,10 @@
+{{- /* chezmoi:modify-template */ -}}
+{{- /* Appends $line when missing. Keeps all other contents. */ -}}
+{{- $line := `source "$HOME/.config/shell/zshrc"` -}}
+{{- $content := .chezmoi.stdin -}}
+{{- $content = replace `source "$HOME/.zshrc.remote"` $line $content -}}
+{{- if not (contains $line $content) -}}
+{{-   if and $content (not (hasSuffix "\n" $content)) -}}{{- $content = print $content "\n" -}}{{- end -}}
+{{-   $content = print $content $line "\n" -}}
+{{- end -}}
+{{- $content -}}
