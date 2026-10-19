@@ -12,6 +12,10 @@ Host alienware3
   HostName 10.162.40.97
   User ubuntu
 
+Host precision6
+  HostName 10.162.40.121
+  User edgar
+
 Host edna
   HostName edna.cps.cit.tum.de
   User ge25wes
