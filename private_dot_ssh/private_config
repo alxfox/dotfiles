@@ -16,6 +16,10 @@ Host precision6
   HostName 10.162.40.121
   User edgar
 
+Host website_edgar
+  HostName 192.168.101.69
+  User ubuntu
+
 Host edna
   HostName edna.cps.cit.tum.de
   User ge25wes
