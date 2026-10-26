@@ -14,7 +14,7 @@ If SSH is not configured yet, use the HTTPS repository URL instead.
 
 The initialization prompt asks for the Git identity and stores it in `~/.config/chezmoi/chezmoi.toml`, which is not committed. To change the answers later, run `chezmoi init --prompt`, inspect with `chezmoi diff`, then run `chezmoi apply`.
 
-The first apply prints optional install commands for zsh, Oh My Zsh, Powerlevel10k, Claude Code, and Codex. Run the ones the machine needs. Print them again with:
+The first apply prints optional install commands for zsh, Oh My Zsh, Powerlevel10k, TPM, Claude Code, and Codex. Run the ones the machine needs. Print them again with `install-hints`, or without the shared aliases:
 
 ```sh
 sh "$(chezmoi source-path)/run_once_after_99-print-install-commands.sh"
@@ -62,7 +62,7 @@ Edit shared files with `chezmoi edit`. Edit local entry points directly and do n
 > [!NOTE]
 > bash reads `~/.profile` only when neither `~/.bash_profile` nor `~/.bash_login` exists. On machines with one of those files, source `~/.profile` from it.
 
-The tmux configuration keeps the default prefix and keybindings, adding mouse support, a larger history, and `Prefix-R` to reload the file.
+The tmux configuration keeps the default prefix and keybindings, adding mouse support, a larger history, and `Prefix-R` to reload the file. tmux-resurrect and tmux-continuum restore sessions after a restart when TPM is installed in `~/.tmux/plugins/tpm`; without TPM the plugin lines are ignored. Install the plugins with `Prefix-I`.
 
 Claude Code and Codex share the same global working conventions. Codex reads a symlink at `~/.codex/AGENTS.md` pointing to `~/.claude/CLAUDE.md`.
 
@@ -76,4 +76,4 @@ Earlier versions used `~/.zshrc.remote`, `~/.zprofile.remote`, `~/.zsh_aliases`,
 
 - Remove the `[include] path = ~/.gitconfig.remote` block from `~/.gitconfig`. Git ignores the missing file until then.
 - Remove the `~/.secrets` line from `~/.zprofile`. The shared profile sources it now.
-- Delete `~/.oh-my-zsh` and `~/.tmux/plugins/tpm` if they are no longer used. They are no longer managed.
+- Delete `~/.oh-my-zsh` and `~/.tmux/plugins` if they are no longer used. They are no longer managed.

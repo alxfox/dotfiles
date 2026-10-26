@@ -14,12 +14,15 @@ Optional install commands (run as needed):
   # Powerlevel10k theme for Oh My Zsh, then: p10k configure
   git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k"
 
+  # TPM for tmux session restore, then press Prefix-I inside tmux
+  git clone --depth=1 https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+
   # Claude Code
   curl -fsSL https://claude.ai/install.sh | bash
 
   # Codex (requires Node.js and npm)
   npm install -g @openai/codex
 
-Print again: sh "$(chezmoi source-path)/run_once_after_99-print-install-commands.sh"
+Print again: install-hints
 
 COMMANDS

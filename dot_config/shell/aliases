@@ -25,6 +25,11 @@ alias ~='cd ~'
 alias c='clear'
 alias h='history'
 
+# Optional install commands printed after the first chezmoi apply
+if command -v chezmoi >/dev/null 2>&1; then
+  alias install-hints='sh "$(chezmoi source-path)/run_once_after_99-print-install-commands.sh"'
+fi
+
 # Safer file operations
 alias cp='cp -i'
 alias mv='mv -i'
